@@ -10,13 +10,11 @@ today we are going to solve this challenge in thm it's a premuim challange
 
 Can you gain an initial foothold, escalate your access, and ultimately log in as the **administrator?**
 
-
-
-## Reconnaissance and enumeration
+## Reconnaissance
 
 the ip for the machine **10.114.189.33**  let's get started:
 
-fitst we didn nmap tcp scan and found  three ports:
+fitst we didn nmap tcp scan and Discovered three open TCP ports:
 
 1.ssh:22
 
@@ -26,17 +24,28 @@ fitst we didn nmap tcp scan and found  three ports:
 
 <img src="assets/127e233a554ef6a6736be82c8178a0730dd69be2.png" title="" alt="" width="630" />
 
+## **Enumeration**
+
+
+
 so lets check the website
 
 ![](assets/0daf569c74b90d54ee99035f54159da93cbdbe4e.png)
 
 Found a login page but we dont have any credentials so lets fitst find some hidden directories using gobuster
 
+`gobuster dir -u http://10.114.189.33 \
+-w /usr/share/wordlists/dirb/common.txt`
+
 ![](assets/54839409608ffeea93d78d5fa0511751387004be.png)
 
 we found some interesting pages let's check them , let's start with the "phpmyadmin":
 
 ![](assets/c919e785b572f441dfe9aab3d224239ea38b6913.png)
+
+## **Initial Access**
+
+
 
 another login page let's skip and go check "mail" it must to has something:
 
@@ -98,6 +107,10 @@ we found the hr password "hrpassword123" ,let's get back to the login page and u
 
 we found our first flag,one flag left .
 
+## **Privilege Escalation / Admin Access**
+
+
+
 we've got user input ,we can check for XSS , SQLInjection...etc.
 
 tried reflected XSS nothing happened
@@ -148,4 +161,30 @@ we got the last flag .
 
 
 
+## Conclusion
 
+This challenge was a great opportunity to practice web application penetration testing.
+
+During this room, I discovered an exposed file retrieval endpoint that allowed access to sensitive application configuration files. By abusing this functionality, I managed to retrieve HR credentials and gain initial access to the application.
+
+After gaining access, I investigated the application's input fields and identified a UNION-based SQL injection vulnerability. This allowed me to enumerate the database, discover the users table, and retrieve administrator credentials.
+
+Finally, I used those credentials to log in as the administrator and complete the challenge.
+
+### What I Learned
+
+- Basic network reconnaissance using Nmap.
+
+- Directory enumeration using Gobuster.
+
+- Understanding PHP stream wrappers.
+
+- Exploiting insecure file retrieval functionality.
+
+- Identifying and exploiting UNION-based SQL injection.
+
+- Enumerating databases, tables, and columns using `information_schema`.
+
+- Understanding the importance of protecting sensitive credentials.
+
+**Key takeaway:** Never trust user-controlled input, especially when it is used to access files or construct SQL queries.
